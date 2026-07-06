@@ -54,5 +54,13 @@ def generate_schedule(data):
         return True # Tüm constraintlerden geçtiyse true dön
             
         
+    # BACKTRACKING Algoritması   
+    def back_tracking(patient_index):
         
+        #Base case tüm hastalar başarıyla yerleştiyse
+        if patient_index == len(patients):
+            return True
+        
+        
+         
     
