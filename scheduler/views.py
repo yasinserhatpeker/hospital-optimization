@@ -4,3 +4,7 @@ from rest_framework import status
 from .serializers import OperationPlanRequestSerializer
 from .services import generate_schedule
 
+
+class GenerateOperationPlanView(APIView):
+    def post(self,request):
+        
