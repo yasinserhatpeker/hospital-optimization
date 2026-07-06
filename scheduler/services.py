@@ -1,3 +1,7 @@
+import pandas as pd
+import plotly.express as px
+from datetime import datetime
+
 def slot_to_time(slot): ## 0-19 arası slot'u gerçek zamana çevirir
     hours = 8 + (slot // 2)
     mins = "30" if slot % 2 != 0 else "00"
@@ -217,3 +221,55 @@ def generate_schedule(data):
 
     # Planı zaman çizelgesine göre (saat sırasına) dizerek döndür
     return sorted(formatted_schedule, key=lambda x: x['time'])
+
+
+def generate_gantt_html(schedule_data):
+    
+    if not schedule_data:
+        return "<h2>Gösterilecek plan bulunamadı. Lütfen geçerli bir takvim oluşturun.</h2>"
+
+    df_list = []
+    
+    dummy_date = "2026-01-01 " 
+    
+    for item in schedule_data:
+        # "08:00-09:30" formatını parçalayıp datetime objesine çeviriyoruz
+        start_str, end_str = item['time'].split('-')
+        start_time = datetime.strptime(dummy_date + start_str, "%Y-%m-%d %H:%M")
+        end_time = datetime.strptime(dummy_date + end_str, "%Y-%m-%d %H:%M")
+        
+        df_list.append({
+            "Ameliyathane": item['room'],
+            "Başlangıç": start_time,
+            "Bitiş": end_time,
+            "Operasyon": item['patient'],
+            "Cerrah": item['surgeon'],
+            "Ekip": item['team']
+        })
+        
+    df = pd.DataFrame(df_list)
+    
+    # Plotly Timeline (Gantt) Grafiğini Oluşturur
+    fig = px.timeline(
+        df, 
+        x_start="Başlangıç", 
+        x_end="Bitiş", 
+        y="Ameliyathane", 
+        color="Cerrah",
+        hover_name="Operasyon",
+        hover_data=["Ekip"],
+        title="🏥 Günlük Ameliyathane Gantt Çizelgesi"
+    )
+    
+    
+    fig.update_yaxes(autorange="reversed") # OR-1'in en üstte görünmesi için
+    fig.update_layout(
+        xaxis=dict(
+            tickformat='%H:%M', # Alt eksende sadece saatleri göster
+            title='Saat'
+        ),
+        font=dict(family="Arial", size=12)
+    )
+    
+    # Grafiği interaktif bir HTML yapısına dönüştürüp döndür
+    return fig.to_html(full_html=False)

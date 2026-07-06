@@ -2,7 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import OperationPlanRequestSerializer
-from .services import generate_schedule
+from .services import generate_schedule, generate_gantt_html
+from django.http import HttpResponse
 
 
 class GenerateOperationPlanView(APIView):
@@ -17,4 +18,6 @@ class GenerateOperationPlanView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class Generate
         
