@@ -27,5 +27,13 @@ def generate_schedule(data):
     def is_valid(patient,room,surgeon,team, start_slot):
         duration = patient['duration']
         
+        # Constraint 1 18.00'dan sonra ameliyat planlanamaz
+        if start_slot + duration > TOTAL_SLOTS:
+            return False
+        
+        # Constraint 2 hastaya uyumlu uzmanlığa sahip surgeon yapabilir sadece
+        if patient['required_specialty'] != surgeon['specialty']:
+            return False
+        
         
     
