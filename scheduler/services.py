@@ -50,6 +50,26 @@ def generate_schedule(data):
                     resource_availability["teams"][team][t]):
                 return False # slotlardan biri bile doluysa false dön
             
+      # Constraint 5    
+      # 1. Geriye doğru say: Atama yapılmak istenen slottan önce doktor ne kadar süredir ameliyatta?
+        busy_before = 0
+        t_before = start_slot - 1
+        while t_before >= 0 and not resource_availability["surgeons"][surgeon['id']][t_before]:
+            busy_before += 1
+            t_before -= 1
+
+        # 2. İleriye doğru say  Atama yapılacak ameliyat bittikten hemen sonra doktorun başka ameliyatı var mı
+        busy_after = 0
+        t_after = start_slot + duration
+        while t_after < TOTAL_SLOTS and not resource_availability["surgeons"][surgeon['id']][t_after]:
+            busy_after += 1
+            t_after += 1
+
+        # 3. Toplam kesintisiz çalışma süresini kontrol et
+        # Eğer geçmişteki ameliyatlar + şu anki ameliyat + gelecekteki ameliyatlar 4 slotu aşıyorsa reddet
+        if busy_before + duration + busy_after > 4:
+            return False
+            
         
         return True # Tüm constraintlerden geçtiyse true dön
             
@@ -60,6 +80,10 @@ def generate_schedule(data):
         #Base case tüm hastalar başarıyla yerleştiyse
         if patient_index == len(patients):
             return True
+        
+        
+        patient = patients[patient_index]
+        duration = patients['duration']
         
         
          
