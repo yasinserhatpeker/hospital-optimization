@@ -9,4 +9,20 @@ class PatientSerializer(serializers.Serializer):
     
 
 class SurgeonSerializer(serializers.Serializer):
+    id = serializers.CharField()
+    specialty = serializers.CharField() # Profesyonel alanı
+    day_off = serializers.CharField(required = False, allow_blank = True, allow_null=True) ## İzinli Gün
+    
+class RoomSerializer(serializers.Serializer):
+    id = serializers.CharField()
+    type = serializers.CharField()
+    supported_operations = serializers.ListField(child=serializers.CharField(),required=False) ## Genel Cerrahi - Kardiyoloji vs.
+    
+
+class OperationPlanRequestSerializer(serializers.Serializer):
+    patients = PatientSerializer(many=True)
+    surgeons = SurgeonSerializer(many=True)
+    rooms = RoomSerializer(many=True)
+    teams = serializers.ListField(child=serializers.CharField()) # Team A Team B şeklinde vs.
+    
     
