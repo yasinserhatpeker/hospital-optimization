@@ -31,8 +31,13 @@ def generate_schedule(data):
         if start_slot + duration > TOTAL_SLOTS:
             return False
         
-        # Constraint 2 hastaya uyumlu uzmanlığa sahip surgeon yapabilir sadece
+        # Constraint 2 hastaya uyumlu uzmanlığa sahip surgeon ameliyat yapabilir yoksa false dön 
         if patient['required_specialty'] != surgeon['specialty']:
+            return False
+        
+        # Constraint 3 eğer doğru ameliyathane hasta eşleşmesi yoksa false dön
+        supported_ops = room.get('supported_operations', [])
+        if supported_ops and patient['operation'] not in supported_ops:
             return False
         
         
