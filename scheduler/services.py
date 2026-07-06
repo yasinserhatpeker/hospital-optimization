@@ -1,9 +1,12 @@
+
+## KULLANILAN YAPI HEURISTIC + BACKTRACKING ALGORİTMASI
+
 def generate_schedule(data):
     patients = data['patients']
     surgeons = data['surgeons']
     rooms = data['rooms']
     teams = data['teams']
-    
+    # Heuristic bir ağırlık ortalaması kullanılır
     priority_weights = {"Kritik":4, "Yüksek":3, "Orta":2, "Düşük":1}
     
     patients.sort(key=lambda x: (priority_weights.get(x['priority'], 0), x['duration']), reverse=True)  # hastalar öncelik ağırlığına göre büyükten küçüğe zamana göre uzundan kısaya sıralanır
@@ -39,6 +42,17 @@ def generate_schedule(data):
         supported_ops = room.get('supported_operations', [])
         if supported_ops and patient['operation'] not in supported_ops:
             return False
+        
+        # Constraint 4 ameliyat süresi boyunca kaynaklar boş mu diye bakıyoruz
+        for t in range(start_slot, start_slot + duration):
+            if not (resource_availability["rooms"][room['id']][t] and
+                    resource_availability["surgeons"][surgeon['id']][t] and
+                    resource_availability["teams"][team][t]):
+                return False # slotlardan biri bile doluysa false dön
+            
+        
+        return True # Tüm constraintlerden geçtiyse true dön
+            
         
         
     
