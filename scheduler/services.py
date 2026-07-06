@@ -64,6 +64,18 @@ def generate_schedule(data):
     rooms = data['rooms']
     teams = data['teams']
 
+    # JSON isteğinden gelen işlem gününü al
+    current_day = data.get('day', '')
+
+    # PDF'te belirtilen doktor izin günleri tablosu
+    SURGEON_DAYS_OFF = {
+        "Dr. Ahmet": "Çarşamba",
+        "Dr. Ayşe": "Pazartesi",
+        "Dr. Mehmet": "Salı",
+        "Dr. Elif": "Perşembe",
+        "Dr. Can": "Cuma"
+    }
+
     # 1. HEURISTIC Hastaları önceliğe göre sıralama
     priority_weights = {"Kritik": 4, "Yüksek": 3, "Orta": 2, "Düşük": 1}
     patients.sort(key=lambda x: (priority_weights.get(x['priority'], 0), x['duration']), reverse=True)
@@ -84,6 +96,11 @@ def generate_schedule(data):
     def is_valid(patient, room, surgeon, team, start_slot):
         duration = patient['duration']
         
+        # Doktor İzin Günü Kontrolü
+        # Eğer planlanan gün, cerrahın izin günüyle eşleşiyorsa atamayı reddeder
+        if current_day and SURGEON_DAYS_OFF.get(surgeon['id']) == current_day:
+            return False
+            
         if start_slot + duration > TOTAL_SLOTS:
             return False
             
