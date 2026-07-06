@@ -7,4 +7,14 @@ from .services import generate_schedule
 
 class GenerateOperationPlanView(APIView):
     def post(self,request):
+        serializer = OperationPlanRequestSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            schedule_result = generate_schedule(serializer.validated_data)
+            
+            return Response(schedule_result,status=status.HTTP_200_OK)
+        
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
         
