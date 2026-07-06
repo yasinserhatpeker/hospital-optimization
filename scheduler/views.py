@@ -19,5 +19,18 @@ class GenerateOperationPlanView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class Generate
+class VisualizeOperationPlanView(APIView):
+    def post(self,request):
+        serializer = OperationPlanRequestSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            schedule_result = generate_schedule(serializer.validated_data)
+            
+            gantt_html = generate_gantt_html(schedule_result)
+            
+           
+            return HttpResponse(gantt_html, content_type='text/html')
+        
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
