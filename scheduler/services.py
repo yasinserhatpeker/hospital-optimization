@@ -1,5 +1,3 @@
-
-
 def generate_schedule(data):
     patients = data['patients']
     surgeons = data['surgeons']
@@ -10,6 +8,16 @@ def generate_schedule(data):
     
     patients.sort(key=lambda x: (priority_weights.get(x['priority'], 0), x['duration']), reverse=True)  # hastalar öncelik ağırlığına göre büyükten küçüğe zamana göre uzundan kısaya sıralanır
     
-    schedule = [] # şimdilik boş veri dönüyoruz temel rest api tasarımı bittikten sonra hard-constraint'ler yazılacak
+    schedule = [] 
     
-    return schedule
+    TOTAL_SLOTS = 20 # 08-18 arası 10 saat için 30 dk'dan toplamda 20 tane slot
+    
+    
+    # resource allocation in-memory veritabanımız
+    # True = Müsait , False = Ameliyatta
+    
+    resource_availability = {
+        "rooms": {r['id'] :[True] * TOTAL_SLOTS for r in rooms}
+        
+    }
+    
