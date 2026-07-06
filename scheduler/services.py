@@ -24,4 +24,8 @@ def generate_schedule(data):
     }
     
     
+    def is_valid(patient,room,surgeon,team, start_slot):
+        duration = patient['duration']
+        
+        
     
