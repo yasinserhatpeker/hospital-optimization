@@ -15,9 +15,13 @@ def generate_schedule(data):
     
     # resource allocation in-memory veritabanımız
     # True = Müsait , False = Ameliyatta
+    # her odanın, cerrahın ve takımın 20 slotluk (10 saatlik) günlüğü 
     
     resource_availability = {
-        "rooms": {r['id'] :[True] * TOTAL_SLOTS for r in rooms}
-        
+        "rooms": {r['id'] :[True] * TOTAL_SLOTS for r in rooms},
+        "surgeons": {s['id']: [True] * TOTAL_SLOTS for s in surgeons},
+        "teams": {t['id']: [True] * TOTAL_SLOTS for t in teams}    
     }
+    
+    
     
