@@ -1,11 +1,18 @@
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 from datetime import datetime
 
 def slot_to_time(slot): # 0-19 arası slot'u gerçek zamana çevirir örn -> slot 5 -> 10.30'a denk gelir
     hours = 8 + (slot // 2) # kalansız bölme(floor division)
     mins = "30" if slot % 2 != 0 else "00" #eğer slot tek sayı ise dakika kısmı 30 çift ise 00 alınır
     return f"{hours:02d}:{mins}" # dijital saate çeviriyoruz
+
+def time_to_slot(time_str): # zamanı tekrar slot numarasına çevirir
+    h, m = map(int, time_str.split(':'))
+    return (h - 8) * 2 + (1 if m == 30 else 0)
+
+
 
 def calculate_penalty_score(schedule, patients_data): # Soft constraintleri hesaplar düşük penalty skoru sağlamak amaç
     penalty = 0
@@ -316,4 +323,60 @@ def generate_gantt_html(schedule_data):
     )
     
     # grafiği interaktif bir HTML yapısına dönüştürüp döndür
+    return fig.to_html(full_html=False)
+
+def generate_heatmap_html(schedule_data):
+    if not schedule_data:
+        return "<h2>Gösterilecek plan bulunamadı. Lütfen geçerli bir takvim oluşturun.</h2>"
+
+    #  saat etiketlerini (X Ekseni) oluşturur (08:00, 08:30 ... 17:30)
+    slots_labels = [slot_to_time(i) for i in range(20)]
+    
+    # takvimdeki benzersiz odaları bul ve alfabetik sırala (Y Ekseni)
+    unique_rooms = list(set([item['room'] for item in schedule_data]))
+    unique_rooms.sort()
+
+    # odalar ve saatler için boş bir matris (0'lardan oluşan) matris yaratır
+    matrix = {room: [0] * 20 for room in unique_rooms}
+    
+    hover_text = {room: ["Boş"] * 20 for room in unique_rooms}
+
+    
+    for item in schedule_data:
+        room = item['room']
+        start_str, end_str = item['time'].split('-')
+        
+        start_slot = time_to_slot(start_str)
+        end_slot = time_to_slot(end_str)
+        
+        for t in range(start_slot, end_slot):
+            matrix[room][t] = 1 # 1 = Dolu
+            hover_text[room][t] = f"Dolu: {item['patient']}<br>Cerrah: {item['surgeon']}"
+
+    
+    z_data = [matrix[room] for room in unique_rooms]
+    text_data = [hover_text[room] for room in unique_rooms]
+
+    # plotly heatmap grafiğini oluşturur
+    fig = go.Figure(data=go.Heatmap(
+        z=z_data,
+        x=slots_labels,
+        y=unique_rooms,
+        colorscale=[[0, 'rgb(46, 204, 113)'], [1, 'rgb(231, 76, 60)']], # 0: Yeşil, 1: Kırmızı
+        showscale=False, 
+        xgap=3,
+        ygap=3,
+        hoverinfo='text',
+        text=text_data
+    ))
+    
+    
+    fig.update_layout(
+        title="🌡️ Ameliyathane Kullanım Yoğunluğu (Heatmap)",
+        xaxis_title="Mesai Saatleri",
+        yaxis_title="Ameliyathaneler",
+        font=dict(family="Arial", size=12),
+        xaxis=dict(tickangle=-45) 
+    )
+    
     return fig.to_html(full_html=False)
