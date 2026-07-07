@@ -18,6 +18,16 @@ class RoomSerializer(serializers.Serializer):
     type = serializers.CharField()
     supported_operations = serializers.ListField(child=serializers.CharField(),required=False) ## Genel Cerrahi - Kardiyoloji vs.
     
+    
+class LockedScheduleSerializer(serializers.Serializer):
+    patient = serializers.CharField()
+    operation = serializers.CharField(required=False, allow_blank=True, default="continious operation")
+    room = serializers.CharField()
+    surgeon = serializers.CharField()
+    team = serializers.CharField()
+    start_slot = serializers.IntegerField()
+    duration = serializers.IntegerField()
+    
 
 class OperationPlanRequestSerializer(serializers.Serializer):
     
@@ -25,6 +35,8 @@ class OperationPlanRequestSerializer(serializers.Serializer):
     surgeons = SurgeonSerializer(many=True)
     rooms = RoomSerializer(many=True)
     teams = serializers.ListField(child=serializers.CharField()) # Team A Team B şeklinde vs.
-    day = serializers.CharField(required=False, allow_null = True, allow_blank = True)
+    day = serializers.CharField(required=False, allow_null = True, allow_blank = True) # Doktor izinli mi değil mi öğrenmek için
+    locked_schedules = LockedScheduleSerializer(many=True, required=False)
+
     
     

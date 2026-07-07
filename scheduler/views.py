@@ -25,10 +25,8 @@ class VisualizeOperationPlanView(APIView):
         
         if serializer.is_valid():
             schedule_result = generate_schedule(serializer.validated_data)
-            
             gantt_html = generate_gantt_html(schedule_result)
             
-           
             return HttpResponse(gantt_html, content_type='text/html')
         
         else:
