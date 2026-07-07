@@ -96,8 +96,8 @@ Yukarıdaki girdiye karşılık algoritmanın ürettiği, zaman çizelgesine uyg
 
 ## 6. Complexity (Karmaşıklık) Analizi
 
-*   **Time Complexity:** Hastaların sıralanması O(P log P) zaman alır (P: Hasta Sayısı). Kesin kısıt motorumuzun mantıksız atamaları anında budaması (pruning) ve çözümün sabit bir üst limit ile sınırlandırılması sayesinde operasyonel çalışma zamanı O(P log P + C x P) civarında lineer performansa yaklaştırılmıştır.
+*   **Time Complexity:** Hastaların sıralanması O(n log n) zaman alır (n: Hasta Sayısı). Kesin kısıt motorumuzun mantıksız atamaları anında budaması (pruning) ve çözümün sabit bir üst limit ile (C=20) sınırlandırılması sayesinde operasyonel çalışma zamanı O(P log n + C x n) civarında lineer performansa yaklaştırılmıştır.
 
-*   **Space Complexity:** Veritabanı I/O maliyetlerini önlemek için kaynak takvimi RAM üzerinde 20 zaman slotluk boolean matrisleriyle yönetilmiştir. Toplam alan karmaşıklığı O(P + (R + S + A) x T) düzeyindedir (R: Oda, S: Cerrah, A: Ekip, T: Zaman Slotu). Sistem, düşük RAM tüketimiyle yüksek ölçeklenebilirlik sunar.
+*   **Space Complexity:** Veritabanı I/O maliyetlerini önlemek için kaynak takvimi RAM üzerinde 20 zaman slotluk boolean matrisleriyle yönetilmiştir. Toplam alan karmaşıklığı O(n + (R + S + A) x T) düzeyindedir (R: Oda, S: Cerrah, A: Ekip, T: Zaman Slotu). Sistem, düşük RAM tüketimiyle yüksek ölçeklenebilirlik sunar.
 
 
