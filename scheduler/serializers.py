@@ -20,9 +20,11 @@ class RoomSerializer(serializers.Serializer):
     
 
 class OperationPlanRequestSerializer(serializers.Serializer):
+    
     patients = PatientSerializer(many=True)
     surgeons = SurgeonSerializer(many=True)
     rooms = RoomSerializer(many=True)
     teams = serializers.ListField(child=serializers.CharField()) # Team A Team B şeklinde vs.
+    day = serializers.CharField(required=False, allow_null = True, allow_blank = True)
     
     

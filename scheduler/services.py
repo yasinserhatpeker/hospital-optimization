@@ -7,10 +7,10 @@ def slot_to_time(slot): ## 0-19 arası slot'u gerçek zamana çevirir
     mins = "30" if slot % 2 != 0 else "00"
     return f"{hours:02d}:{mins}"
 
-def calculate_penalty(schedule, patients_data): # Soft constraint'leri hesaplar düşük penalty skoru sağlamak amaç
+def calculate_penalty(schedule, patients_data): # Soft constraintleri hesaplar düşük penalty skoru sağlamak amaç
     penalty = 0
     
-    # Hastaların öncelik verisine hızlı erişim için dictionary
+    # Hastaların öncelik verisine hızlı erişim için bir dictionary
     priority_map = {p['id']: p['priority'] for p in patients_data}
     
     surgeon_schedules = {}
