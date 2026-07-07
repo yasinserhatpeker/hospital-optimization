@@ -181,8 +181,14 @@ def generate_schedule(data):
             busy_after += 1
             t_after += 1
             
-        if busy_before + duration + busy_after > 4:
-            return False
+        if duration >= 4:
+            if busy_before > 0 or busy_after > 0:
+                return False
+        
+        
+        else:
+            if busy_before + duration + busy_after > 4:
+                return False
 
         return True
 
